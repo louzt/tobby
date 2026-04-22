@@ -17,6 +17,8 @@ describe('Server Actions', () => {
       servers: [],
       currentServerId: null,
       currentChannelId: null,
+      activeModal: null,
+      discoverServerPrefill: null,
     })
 
     registry = new ActionRegistry<AppStore>()
@@ -48,5 +50,26 @@ describe('Server Actions', () => {
     expect(state.servers[0]!.name).toBe('Test Server')
 
     expect(state.currentServerId).toBe(state.servers[0]!.id)
+  })
+
+  it('opens Add Server directly and clears discover prefill', async () => {
+    useStore.setState({
+      discoverServerPrefill: {
+        name: 'Discover Network',
+        host: 'irc.discover.test',
+        port: 6697,
+      },
+    })
+
+    await registry.execute('server.connect', context)
+
+    expect(useStore.getState().activeModal).toBe('connect')
+    expect(useStore.getState().discoverServerPrefill).toBeNull()
+  })
+
+  it('opens the discover modal', async () => {
+    await registry.execute('server.discover', context)
+
+    expect(useStore.getState().activeModal).toBe('discover')
   })
 })

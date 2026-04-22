@@ -38,6 +38,7 @@ export default [
         Timer: 'readonly',
         require: 'readonly',
         Bun: 'readonly',
+        fetch: 'readonly',
       },
     },
     plugins: {

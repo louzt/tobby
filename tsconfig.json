@@ -17,7 +17,6 @@
     "noEmit": true,
 
     // Path mapping
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@irc/*": ["./ObsidianIRC/src/lib/*"]

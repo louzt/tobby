@@ -6,6 +6,7 @@ import { getDatabase } from '@/services/database'
 export interface UISlice extends UIState {
   openModal: (modalId: string) => void
   closeModal: () => void
+  setDiscoverServerPrefill: (prefill: UIState['discoverServerPrefill']) => void
   setFocusedPane: (pane: 'servers' | 'chat' | 'users') => void
   setFocusedChannel: (channelId: string | null) => void
   toggleServerPane: () => void
@@ -26,6 +27,7 @@ export interface UISlice extends UIState {
 
 export const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set, get) => ({
   activeModal: null,
+  discoverServerPrefill: null,
   focusedPane: 'chat',
   focusedChannel: null,
   showServerPane: true,
@@ -45,6 +47,7 @@ export const createUISlice: StateCreator<AppStore, [], [], UISlice> = (set, get)
 
   openModal: (modalId) => set({ activeModal: modalId }),
   closeModal: () => set({ activeModal: null }),
+  setDiscoverServerPrefill: (prefill) => set({ discoverServerPrefill: prefill }),
   setFocusedPane: (pane) => set({ focusedPane: pane }),
   setFocusedChannel: (channelId) => set({ focusedChannel: channelId }),
   toggleServerPane: () => {

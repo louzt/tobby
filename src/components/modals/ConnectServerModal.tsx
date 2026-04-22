@@ -19,20 +19,32 @@ export function ConnectServerModal({ width, height }: ConnectServerModalProps) {
   const { registry, ircClient, renderer } = useAppContext()
   const store = useStore()
   const closeModal = useStore((state) => state.closeModal)
+  const setDiscoverServerPrefill = useStore((state) => state.setDiscoverServerPrefill)
+  const discoverPrefill = useStore((state) => state.discoverServerPrefill)
   const [formError, setFormError] = useState('')
 
   // Prefill from --setup CLI args if present
   const prefill = globalThis.__CLI_PREFILL__
   const restrictions = getRestrictions()
-  const defaultPort = String(restrictions.port ?? prefill?.port ?? 6697)
+  const defaultPort = String(restrictions.port ?? discoverPrefill?.port ?? prefill?.port ?? 6697)
+
+  const handleClose = () => {
+    setDiscoverServerPrefill(null)
+    closeModal()
+  }
 
   const fields: FormField[] = [
-    { key: 'name', label: 'Server Name', placeholder: 'My Server', defaultValue: prefill?.host },
+    {
+      key: 'name',
+      label: 'Server Name',
+      placeholder: 'My Server',
+      defaultValue: discoverPrefill?.name ?? prefill?.host,
+    },
     {
       key: 'host',
       label: 'Host',
       placeholder: 'irc.example.com',
-      defaultValue: restrictions.server ?? prefill?.host,
+      defaultValue: restrictions.server ?? discoverPrefill?.host ?? prefill?.host,
       // Lock the field so the user cannot type a different host
       readOnly: !!restrictions.server,
     },
@@ -82,6 +94,7 @@ export function ConnectServerModal({ width, height }: ConnectServerModalProps) {
       return
     }
     setFormError('')
+    setDiscoverServerPrefill(null)
 
     const context = { store, ircClient, renderer }
     const params = {
@@ -106,7 +119,7 @@ export function ConnectServerModal({ width, height }: ConnectServerModalProps) {
       title="Add Server"
       fields={fields}
       onSubmit={handleSubmit}
-      onCancel={closeModal}
+      onCancel={handleClose}
       submitLabel="Connect"
       error={formError || undefined}
     />

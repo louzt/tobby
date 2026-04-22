@@ -120,6 +120,7 @@ export interface Action<TStore = unknown, TParams extends unknown[] = unknown[]>
 
 export interface UIState {
   activeModal: string | null
+  discoverServerPrefill: { name: string; host: string; port: number } | null
   focusedPane: 'servers' | 'chat' | 'users'
   focusedChannel: string | null
   showServerPane: boolean

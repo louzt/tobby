@@ -13,6 +13,7 @@ import { RemoveServerModal } from '../modals/RemoveServerModal'
 import { EmojiPickerModal } from '../modals/EmojiPickerModal'
 import { SetTopicModal } from '../modals/SetTopicModal'
 import { ChannelBrowserModal } from '../modals/ChannelBrowserModal'
+import { DiscoverServerModal } from '../modals/DiscoverServerModal'
 import { useStore } from '../../store'
 import { useAppContext } from '../../context/AppContext'
 import { THEME } from '../../constants/theme'
@@ -151,6 +152,8 @@ export function MainLayout() {
       {activeModal === 'quickActions' && <QuickActionsMenu width={width} height={height} />}
 
       {activeModal === 'connect' && <ConnectServerModal width={width} height={height} />}
+
+      {activeModal === 'discover' && <DiscoverServerModal width={width} height={height} />}
 
       {activeModal === 'removeServer' && <RemoveServerModal width={width} height={height} />}
 

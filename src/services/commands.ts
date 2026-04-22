@@ -92,6 +92,7 @@ export class CommandParser {
           '',
           'IRC COMMANDS:',
           '  • /connect <host> <port> <nick>  Connect to server',
+          '  • /discover                      Browse public IRC servers',
           '  • /join #channel                 Join channel',
           '  • /part [#channel]               Leave channel',
           '  • /msg <target> <text>           Send message to nick or channel',
@@ -172,6 +173,19 @@ export class CommandParser {
           nickname: nickname ?? 'obbyUser',
         })
         return { success: true, message: `Connecting to ${host}:${port}...` }
+      },
+    })
+
+    this.register({
+      name: 'discover',
+      aliases: [],
+      description: 'Browse public IRC servers',
+      usage: '/discover',
+      minArgs: 0,
+      maxArgs: 0,
+      execute: async (_args, ctx) => {
+        await this.registry.execute('server.discover', ctx)
+        return { success: true }
       },
     })
 

@@ -28,8 +28,24 @@ export function registerServerActions(registry: ActionRegistry<AppStore>) {
     execute: async (ctx: ActionContext<AppStore>) => {
       const { store } = ctx
 
-      // Open connect modal (assuming store has direct access to actions)
+      store.setDiscoverServerPrefill(null)
       store.openModal('connect')
+    },
+  })
+
+  registry.register({
+    id: 'server.discover',
+    label: 'Browse Public Servers',
+    description: 'Browse IRC networks from the ObsidianIRC directory',
+    category: 'server',
+    keywords: ['discover', 'browse', 'directory', 'public', 'servers'],
+    priority: 95,
+
+    isEnabled: () => true,
+    isVisible: () => true,
+
+    execute: async (ctx: ActionContext<AppStore>) => {
+      ctx.store.openModal('discover')
     },
   })
 

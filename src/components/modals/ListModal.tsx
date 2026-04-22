@@ -24,6 +24,8 @@ interface ListModalProps {
   onCancel: () => void
   placeholder?: string
   emptyMessage?: string
+  itemLayout?: 'inline' | 'stacked'
+  modalWidth?: number
 }
 
 export function ListModal({
@@ -37,22 +39,28 @@ export function ListModal({
   onCancel,
   placeholder = 'Search...',
   emptyMessage = 'No results',
+  itemLayout = 'inline',
+  modalWidth: requestedModalWidth,
 }: ListModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const scrollBoxRef = useRef<ScrollBoxRenderable | null>(null)
+  const itemHeight = itemLayout === 'stacked' ? 2 : 1
 
   useEffect(() => {
     const box = scrollBoxRef.current
     if (!box) return
     const viewportHeight = box.height ?? 0
-    if (selectedIndex < box.scrollTop) {
-      box.scrollTop = selectedIndex
-    } else if (selectedIndex >= box.scrollTop + viewportHeight) {
-      box.scrollTop = selectedIndex - viewportHeight + 1
-    }
-  }, [selectedIndex])
+    const viewportItems = Math.max(1, Math.floor(viewportHeight / itemHeight))
+    const firstVisibleItem = Math.floor(box.scrollTop / itemHeight)
 
-  const modalWidth = Math.min(60, width - 4)
+    if (selectedIndex < firstVisibleItem) {
+      box.scrollTop = selectedIndex * itemHeight
+    } else if (selectedIndex >= firstVisibleItem + viewportItems) {
+      box.scrollTop = (selectedIndex - viewportItems + 1) * itemHeight
+    }
+  }, [itemHeight, selectedIndex])
+
+  const modalWidth = Math.min(requestedModalWidth ?? 60, width - 4)
   const modalHeight = Math.min(20, height - 4)
 
   const fuse = useMemo(
@@ -65,7 +73,15 @@ export function ListModal({
     return fuse.search(query).map((r) => r.item)
   }, [query, items, fuse])
 
-  const visibleItems = filteredItems.slice(0, modalHeight - 5)
+  const visibleItems = filteredItems.slice(
+    0,
+    Math.max(1, Math.floor((modalHeight - 5) / itemHeight))
+  )
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text
+    return `${text.slice(0, Math.max(0, maxLength - 1))}…`
+  }
 
   useKeyboard((key) => {
     if (key.name === 'escape') {
@@ -174,16 +190,33 @@ export function ListModal({
               key={item.id}
               paddingLeft={2}
               paddingRight={2}
+              height={itemHeight}
               backgroundColor={index === selectedIndex ? THEME.selectedBackground : undefined}
               onMouseDown={() => onSelect(item)}
             >
-              <box flexDirection="row" gap={1}>
-                {item.icon && <text fg={THEME.mutedText}>{item.icon}</text>}
-                <text fg={item.fg ?? (index === selectedIndex ? THEME.accent : THEME.foreground)}>
-                  {item.label}
-                </text>
-                {item.sublabel && <text fg={THEME.mutedText}>{item.sublabel}</text>}
-              </box>
+              {itemLayout === 'stacked' ? (
+                <box flexDirection="column">
+                  <box flexDirection="row" gap={1}>
+                    {item.icon && <text fg={THEME.mutedText}>{item.icon}</text>}
+                    <text
+                      fg={item.fg ?? (index === selectedIndex ? THEME.accent : THEME.foreground)}
+                    >
+                      {truncateText(item.label, modalWidth - 6)}
+                    </text>
+                  </box>
+                  <text fg={THEME.mutedText}>
+                    {truncateText(item.sublabel ?? '', modalWidth - 6)}
+                  </text>
+                </box>
+              ) : (
+                <box flexDirection="row" gap={1}>
+                  {item.icon && <text fg={THEME.mutedText}>{item.icon}</text>}
+                  <text fg={item.fg ?? (index === selectedIndex ? THEME.accent : THEME.foreground)}>
+                    {item.label}
+                  </text>
+                  {item.sublabel && <text fg={THEME.mutedText}>{item.sublabel}</text>}
+                </box>
+              )}
             </box>
           ))
         )}
