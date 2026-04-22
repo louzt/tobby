@@ -1,4 +1,4 @@
-interface InitialSetupOptions {
+export interface InitialSetupOptions {
   setupMode: boolean | undefined
   configuredServerCount: number
 }

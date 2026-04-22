@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { shouldOpenInitialConnectModal } from '@/utils/initialSetup'
 
 describe('shouldOpenInitialConnectModal', () => {
+  it('treats undefined setup mode as false when servers already exist', () => {
+    expect(shouldOpenInitialConnectModal({ setupMode: undefined, configuredServerCount: 2 })).toBe(
+      false
+    )
+  })
+
   it('opens in explicit setup mode', () => {
     expect(shouldOpenInitialConnectModal({ setupMode: true, configuredServerCount: 3 })).toBe(
       true
