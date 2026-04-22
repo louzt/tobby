@@ -7,6 +7,7 @@ import { AppProvider } from './context/AppContext'
 import { createActionRegistry } from './actions/createActionRegistry'
 import { autoConnectServers } from './utils/autoConnect'
 import { copyToClipboard } from './utils/clipboard'
+import { shouldOpenInitialConnectModal } from './utils/initialSetup'
 
 const registry = createActionRegistry()
 
@@ -29,8 +30,14 @@ export function App() {
     migratePasswords()
     loadPersistedUIState()
     initializeIRC()
-    // --setup: open the connect modal so the user can fill in server details
-    if (globalThis.__SETUP_MODE__) {
+    // Fresh installs land in an empty shell otherwise, so reuse the setup modal
+    // when there are no configured servers after loading persisted state.
+    if (
+      shouldOpenInitialConnectModal({
+        setupMode: globalThis.__SETUP_MODE__,
+        configuredServerCount: useStore.getState().servers.length,
+      })
+    ) {
       setTimeout(() => useStore.getState().openModal('connect'), 50)
     }
   }, [initializeIRC, loadPersistedServers, loadPersistedUIState, migratePasswords])
