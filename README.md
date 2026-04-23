@@ -1,6 +1,6 @@
 # tobby
 
-[![npm](https://img.shields.io/npm/v/@mattfillipe/tobby?color=crimson&label=npm)](https://www.npmjs.com/package/@mattfillipe/tobby)
+[![npm](https://img.shields.io/npm/v/@louzt/tobby?color=crimson&label=npm)](https://www.npmjs.com/package/@louzt/tobby)
 [![CI](https://img.shields.io/github/actions/workflow/status/ObsidianIRC/tobby/ci.yml?label=CI&logo=github)](https://github.com/ObsidianIRC/tobby/actions/workflows/ci.yml)
 [![AUR](https://img.shields.io/aur/version/tobby-bin?label=AUR&logo=archlinux&logoColor=white)](https://aur.archlinux.org/packages/tobby-bin)
 [![License](https://img.shields.io/github/license/ObsidianIRC/tobby)](LICENSE)
@@ -21,10 +21,13 @@ nix run github:ObsidianIRC/tobby
 nix profile install github:ObsidianIRC/tobby
 
 # npm (requires Bun):
-npm install -g @mattfillipe/tobby
+npm install -g @louzt/tobby
 
 # or run without installing (requires Bun):
-npx @mattfillipe/tobby
+npx @louzt/tobby
+
+# or install directly from this fork/branch:
+npm install -g github:louzt/tobby#feat/louzt-native-build
 
 # or just run without running
 ssh h4ks.com
@@ -40,6 +43,8 @@ tobby --help
 ```
 
 Press **Ctrl+K** to open the action menu. From there you can connect to a server and join channels.
+
+This branch is the `louzt`-owned build line, intended to let the local system use the forked binary as the primary `tobby` installation while upstream-native transport work evolves separately.
 
 Join a channel with `/join #channel` or open the action menu with `Ctrl+K` and select "Join channel". To send a message, just start typing. Press **Enter** to send, or **Shift+Enter** for a new line.
 

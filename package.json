@@ -1,11 +1,11 @@
 {
-  "name": "@mattfillipe/tobby",
-  "version": "0.2.13",
-  "description": "The Terminal Obby — a modern IRC client for the terminal",
+  "name": "@louzt/tobby",
+  "version": "0.2.13-louzt.0",
+  "description": "Louzt's native-transport Tobby build for the terminal",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ObsidianIRC/tobby.git"
+    "url": "https://github.com/louzt/tobby.git"
   },
   "bin": {
     "tobby": "bin/tobby.js"
