@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, test, vi } from 'vitest'
+import net from 'net'
 import { NodeTCPSocket } from '../../src/lib/nodeTcpSocket'
 import {
   createSocketTransport,
@@ -32,14 +33,24 @@ describe('socketTransport', () => {
   })
 
   test('reset restores the default TCP/TLS transport', () => {
-    setSocketTransportFactory(() => {
+    const sentinel = vi.fn(() => {
       throw new Error('custom transport should have been reset')
     })
+    const fakeSocket = {
+      on: vi.fn().mockReturnThis(),
+      end: vi.fn(),
+      write: vi.fn(),
+    } as unknown as net.Socket
+
+    const connectSpy = vi.spyOn(net, 'connect').mockReturnValue(fakeSocket)
+
+    setSocketTransportFactory(sentinel)
     resetSocketTransportFactory()
 
     const socket = createSocketTransport('irc://127.0.0.1:65535')
 
+    expect(sentinel).not.toHaveBeenCalled()
+    expect(connectSpy).toHaveBeenCalledWith({ host: '127.0.0.1', port: 65535 })
     expect(socket).toBeInstanceOf(NodeTCPSocket)
-    socket.close()
   })
 })
