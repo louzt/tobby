@@ -1,5 +1,5 @@
 import { IRCClient as BaseIRCClient, type EventMap } from '@irc/ircClient'
-import { createSocketTransport } from '../lib/socketTransport'
+import { buildSocketTransportUrl, createSocketTransport } from '../lib/socketTransport'
 import { getRestrictions } from './restrictions'
 
 /**
@@ -78,7 +78,7 @@ export class IRCClient extends BaseIRCClient {
       if (!saslAccountName) saslAccountName = restrictions.nick
     }
 
-    const url = `${port === 6697 || port === 6679 ? 'ircs' : 'irc'}://${host}:${port}`
+    const url = buildSocketTransportUrl(host, port)
 
     const nodeSocket = createSocketTransport(url)
 
@@ -120,7 +120,7 @@ export class IRCClient extends BaseIRCClient {
 
     // Set up socket handlers to match BaseIRCClient behavior
     nodeSocket.onopen = () => {
-      debugLog?.(`[IRC] Socket opened for ${host}:${port}`)
+      globalThis.debugLog?.(`[IRC] Socket opened for ${host}:${port}`)
       nodeSocket.send('CAP LS 302')
       if (password) {
         nodeSocket.send(`PASS ${password}`)
@@ -227,7 +227,7 @@ export class IRCClient extends BaseIRCClient {
     }
 
     nodeSocket.onerror = (err) => {
-      debugLog?.(`[IRC] Socket error for ${host}:`, err.message)
+      globalThis.debugLog?.(`[IRC] Socket error for ${host}:`, err.message)
       ;(this as any).triggerEvent('error', {
         serverId: server.id,
         error: err.message,
@@ -235,13 +235,15 @@ export class IRCClient extends BaseIRCClient {
     }
 
     nodeSocket.onclose = () => {
-      debugLog?.(`[IRC] Socket closed for ${host}`)
+      globalThis.debugLog?.(`[IRC] Socket closed for ${host}`)
       server.isConnected = false
       server.connectionState = 'disconnected'
       ;(this as any).triggerEvent('disconnect', { serverId: server.id })
     }
 
-    debugLog?.(`[IRC] Socket handlers configured for ${host}:${port}, waiting for connection...`)
+    globalThis.debugLog?.(
+      `[IRC] Socket handlers configured for ${host}:${port}, waiting for connection...`
+    )
     return { id: server.id, server }
   }
 }
