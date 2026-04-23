@@ -1,16 +1,6 @@
 import net from 'net'
 import tls from 'tls'
-
-interface ISocket {
-  onopen: (() => void) | null
-  onmessage: ((event: { data: string }) => void) | null
-  onerror: ((error: Error) => void) | null
-  onclose: (() => void) | null
-
-  send(data: string): void
-  close(): void
-  readyState: number
-}
+import type { ISocket } from './socketTypes'
 
 export class NodeTCPSocket implements ISocket {
   private socket: net.Socket | tls.TLSSocket

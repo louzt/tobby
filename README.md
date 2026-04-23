@@ -90,6 +90,7 @@ To react, reply hit `Ctrl+Space` to enter message selection mode, navigate to th
 - vim-like keybindings for navigation and message selection
 - Multi-line support with collapsible messages
 - Persistent config and chat history (SQLite)
+- Native transport seam under the IRC client so future QUIC/identity overlays can be integrated without rewriting the UI/store layers
 
 ## Development
 
@@ -100,6 +101,8 @@ git submodule update --init ObsidianIRC
 bun install
 bun run dev
 ```
+
+Architecture notes live in `ARCHITECTURE.md`.
 
 Run tests and checks:
 

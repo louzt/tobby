@@ -1,5 +1,5 @@
 import { IRCClient as BaseIRCClient, type EventMap } from '@irc/ircClient'
-import { NodeTCPSocket } from '../lib/nodeTcpSocket'
+import { createSocketTransport } from '../lib/socketTransport'
 import { getRestrictions } from './restrictions'
 
 /**
@@ -80,7 +80,7 @@ export class IRCClient extends BaseIRCClient {
 
     const url = `${port === 6697 || port === 6679 ? 'ircs' : 'irc'}://${host}:${port}`
 
-    const nodeSocket = new NodeTCPSocket(url)
+    const nodeSocket = createSocketTransport(url)
 
     const finalName = name?.trim() || host
     const server: any = {
